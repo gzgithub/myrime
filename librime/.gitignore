@@ -1,0 +1,17 @@
+build/
+build-static/
+debug-build/
+vcbuild/
+vcbuild-static/
+xbuild/
+xdebug/
+data/*
+data/preset
+data/supplement
+data/extra
+thirdparty/include/*
+thirdparty/lib/*
+thirdparty/bin/*
+env.bat
+*~
+.*.swp
