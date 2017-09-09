@@ -33,27 +33,29 @@ void
 ibus_rime_load_settings(IBusConfig* config)
 {
   //g_debug("ibus_rime_load_settings");
-  GVariant* value;
+  GValue value = {0};
+  gboolean bl;
 
-  value = ibus_config_get_value(config, "engine/Rime", "embed_preedit_text");
-  if (!value) {
-    value = ibus_config_get_value(config, "general", "embed_preedit_text");
-  }
-  if (value && g_variant_classify(value) == G_VARIANT_CLASS_BOOLEAN) {
-    g_ibus_rime_settings.embed_preedit_text = g_variant_get_boolean(value);
+  bl = ibus_config_get_value(config, "engine/Rime", "embed_preedit_text", &value);
+  if (!bl) {
+    bl = ibus_config_get_value(config, "general", "embed_preedit_text", &value);
   }
 
-  value = ibus_config_get_value(config, "engine/Rime", "lookup_table_orientation");
-  if (!value) {
-    value = ibus_config_get_value(config, "general", "lookup_table_orientation");
-  }
-  if (value && g_variant_classify(value) == G_VARIANT_CLASS_INT32) {
-    g_ibus_rime_settings.lookup_table_orientation = g_variant_get_int32(value);
+  if (G_VALUE_TYPE(&value) == G_TYPE_BOOLEAN) {
+    g_ibus_rime_settings.embed_preedit_text = g_value_get_boolean(&value);
   }
 
-  value = ibus_config_get_value(config, "engine/Rime", "color_scheme");
-  if (value && g_variant_classify(value) == G_VARIANT_CLASS_STRING) {
-    ibus_rime_select_color_scheme(g_variant_get_string(value, NULL));
+  bl = ibus_config_get_value(config, "engine/Rime", "lookup_table_orientation", &value);
+  if (!bl) {
+    bl = ibus_config_get_value(config, "general", "lookup_table_orientation", &value);
+  }
+  if (G_VALUE_TYPE(&value) == G_TYPE_INT) {
+    g_ibus_rime_settings.lookup_table_orientation = g_value_get_int(&value);
+  }
+
+  bl = ibus_config_get_value(config, "engine/Rime", "color_scheme", &value);
+  if (G_VALUE_TYPE(&value) == G_TYPE_STRING) {
+    ibus_rime_select_color_scheme(g_value_get_string(&value));
   }
 }
 
@@ -80,16 +82,18 @@ ibus_rime_config_value_changed_cb(IBusConfig* config,
   else if (!strcmp("engine/Rime", section)) {
     if (!strcmp("embed_preedit_text", name) &&
         value && g_variant_classify(value) == G_VARIANT_CLASS_BOOLEAN) {
-      GVariant* overridden = ibus_config_get_value(config, "engine/Rime", "embed_preedit_text");
-      if (!overridden) {
+      GValue overridden = {0};
+      gboolean bl = ibus_config_get_value(config, "engine/Rime", "embed_preedit_text", &overridden);
+      if (!bl) {
         g_ibus_rime_settings.embed_preedit_text = g_variant_get_boolean(value);
       }
       return;
     }
     if (!strcmp("lookup_table_orientation", name) &&
         value && g_variant_classify(value) == G_VARIANT_CLASS_INT32) {
-      GVariant* overridden = ibus_config_get_value(config, "engine/Rime", "lookup_table_orientation");
-      if (!overridden) {
+      GValue overridden = {0};
+      gboolean bl = ibus_config_get_value(config, "engine/Rime", "lookup_table_orientation", &overridden);
+      if (!bl) {
         g_ibus_rime_settings.lookup_table_orientation = g_variant_get_int32(value);
       }
       return;
