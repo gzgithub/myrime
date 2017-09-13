@@ -2,8 +2,9 @@
 How to build 
 =============
 
-$ cd ibus-rime
-$ install.sh
+```$ cd ibus-rime```
+
+```$ install.sh```
 
 The install.sh will run make for ibus-rime, brise, and librime.
 
